@@ -1,5 +1,6 @@
 package bucholc.arkadiusz.taskManagementApp.service;
 
+import bucholc.arkadiusz.taskManagementApp.exception.UserNotFoundException;
 import bucholc.arkadiusz.taskManagementApp.model.Task;
 import bucholc.arkadiusz.taskManagementApp.model.TaskStatus;
 import bucholc.arkadiusz.taskManagementApp.repository.TaskRepository;
@@ -38,7 +39,7 @@ public class TaskService {
 	}
 
 	public Task partialUpdate(Long id, Map<String, Object> updates) {
-		Task task = taskRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Task not found"));
+		Task task = taskRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
 
 		updates.forEach((key, value) -> {
 			switch (key) {
