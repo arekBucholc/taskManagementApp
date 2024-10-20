@@ -5,6 +5,7 @@ import bucholc.arkadiusz.taskManagementApp.model.TaskStatus;
 import bucholc.arkadiusz.taskManagementApp.service.TaskService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class TaskController {
@@ -52,5 +54,10 @@ public class TaskController {
 	@GetMapping("/status/{status}")
 	public List<Task> getTasksByStatus(@PathVariable TaskStatus status) {
 		return taskService.findTaskByStatus(status);
+	}
+	
+	@PatchMapping("/{id}")
+	public Task partiallyUpdateTask(@PathVariable Long id, @RequestBody Map<String, Object> updatesMap) {
+		return taskService.partialUpdate(id, updatesMap);
 	}
 }

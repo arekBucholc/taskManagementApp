@@ -5,7 +5,9 @@ import bucholc.arkadiusz.taskManagementApp.model.TaskStatus;
 import bucholc.arkadiusz.taskManagementApp.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class TaskService {
@@ -33,5 +35,28 @@ public class TaskService {
 
 	public List<Task> findTaskByStatus(TaskStatus status) {
 		return taskRepository.findByStatus(status);
+	}
+
+	public Task partialUpdate(Long id, Map<String, Object> updates) {
+		Task task = taskRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Task not found"));
+
+		updates.forEach((key, value) -> {
+			switch (key) {
+			case "title":
+				task.setTitle((String) value);
+				break;
+			case "description":
+				task.setDescription((String) value);
+				break;
+			case "status":
+				task.setStatus(String.valueOf(TaskStatus.valueOf((String) value)));
+				break;
+			case "dueDate":
+				task.setDueDate(LocalDate.parse((String) value));
+				break;
+			}
+		});
+
+		return taskRepository.save(task);
 	}
 }
