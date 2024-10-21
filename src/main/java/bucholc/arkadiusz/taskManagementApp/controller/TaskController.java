@@ -1,15 +1,19 @@
 package bucholc.arkadiusz.taskManagementApp.controller;
 
+import bucholc.arkadiusz.taskManagementApp.TaskDTO;
+import bucholc.arkadiusz.taskManagementApp.exception.TaskNotFoundException;
+import bucholc.arkadiusz.taskManagementApp.exception.UserNotFoundException;
 import bucholc.arkadiusz.taskManagementApp.model.Task;
 import bucholc.arkadiusz.taskManagementApp.model.TaskStatus;
 import bucholc.arkadiusz.taskManagementApp.service.TaskService;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,40 +31,48 @@ public class TaskController {
 	}
 	
 	@GetMapping
-	public List<Task> getAllTasks() {
-		return taskService.findAll();
+	public ResponseEntity<List<Task>> getAllTasks() {
+		List<Task> tasks = taskService.findAll();
+		return ResponseEntity.ok(tasks);
 	}
 	
 	@PostMapping
-	public Task createTask(@RequestBody Task task) {
-		return taskService.saveTask(task);
+	public ResponseEntity<Task> createTask(@RequestBody TaskDTO taskDTO) {
+		Task task = new Task();
+		task.setTitle(taskDTO.getTitle());
+		task.setDescription(taskDTO.getDescription());
+		task.setStatus(TaskStatus.valueOf(taskDTO.getStatus()));
+		task.setDueDate(taskDTO.getDueDate());
+		
+		Task createdTask = taskService.createTask(task, taskDTO.getAssignedUserIds());
+		return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
 	}
 	
-	@PutMapping("/id")
-	public Task updateTask(@PathVariable Long id, @RequestBody Task updatedTask) {
-		Task task = taskService.findTaskById(id);
-		if (task != null) {
-			task.setTitle(updatedTask.getTitle());
-			task.setDescription(updatedTask.getDescription());
-			task.setStatus(updatedTask.getStatus());
-			task.setDueDate(updatedTask.getDueDate());
-			return taskService.saveTask(task);
-		}
-		return null;
+	@PatchMapping ("/{id}")
+	public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+		Task updatedTask = taskService.updateTask(id, updates);
+		return ResponseEntity.ok(updatedTask);
 	}
 	
 	@DeleteMapping("/{id}")
-	public void deleteTask(@PathVariable Long id) {
-		taskService.deleteTask(id);
+	public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
+		taskService.deleteTaskById(id);
+		return ResponseEntity.noContent().build();
 	}
 	
 	@GetMapping("/status/{status}")
-	public List<Task> getTasksByStatus(@PathVariable TaskStatus status) {
-		return taskService.findTaskByStatus(status);
+	public ResponseEntity<List<Task>> getTasksByStatus(@PathVariable TaskStatus status) {
+		List<Task> foundTasks = taskService.findTaskByStatus(status);
+		return ResponseEntity.ok(foundTasks);
 	}
 	
-	@PatchMapping("/{id}")
-	public Task partiallyUpdateTask(@PathVariable Long id, @RequestBody Map<String, Object> updatesMap) {
-		return taskService.partialUpdate(id, updatesMap);
+	@ExceptionHandler(UserNotFoundException.class)
+	public ResponseEntity<String> handleNoUsersFoundException(UserNotFoundException exception) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+	}
+
+	@ExceptionHandler(TaskNotFoundException.class)
+	public ResponseEntity<String> handleResourceNotFoundException(TaskNotFoundException exception) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
 	}
 }

@@ -1,8 +1,14 @@
 package bucholc.arkadiusz.taskManagementApp.controller;
 
+import bucholc.arkadiusz.taskManagementApp.exception.UserAlreadyExistsException;
+import bucholc.arkadiusz.taskManagementApp.exception.UserAssignedToTaskException;
+import bucholc.arkadiusz.taskManagementApp.exception.UserNotFoundException;
 import bucholc.arkadiusz.taskManagementApp.model.User;
 import bucholc.arkadiusz.taskManagementApp.service.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,22 +30,48 @@ public class UserController {
 	}
 
 	@GetMapping
-	public List<User> getAllUsers() {
-		return userService.findAll();
+	public ResponseEntity<List<User>> getAllUsers() {
+		List<User> allUsers = userService.findAll();
+		return ResponseEntity.ok(allUsers);
+	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<User> getUserById(@PathVariable Long id) {
+		User user = userService.findById(id);
+		return ResponseEntity.ok(user);
 	}
 
 	@PostMapping
-	public User createUser(@RequestBody User user) {
-		return userService.saveUser(user);
+	public ResponseEntity<User> createUser(@RequestBody User user) {
+		User createdUser = userService.createUser(user);
+		return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
 	}
 
 	@DeleteMapping("/{id}")
-	public void deleteUser(@PathVariable Long id) {
+	public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
 		userService.removeUser(id);
+		return ResponseEntity.noContent().build();
 	}
 
 	@PatchMapping("/{id}")
-	public User partiallyUpdateUser(@PathVariable Long id, @RequestBody Map<String, Object> updatesMap) {
-		return userService.partialUpdate(id, updatesMap);
+	public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody Map<String, Object> updatesMap) {
+		User updatedUser = userService.updateUser(id, updatesMap);
+		return ResponseEntity.ok(updatedUser);
 	}
+	
+	@ExceptionHandler
+	public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException exception) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+	}
+
+	@ExceptionHandler
+	public ResponseEntity<String> handleUserAssignedToTaskException(UserAssignedToTaskException exception) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+	}
+
+	@ExceptionHandler(UserAlreadyExistsException.class)
+	public ResponseEntity<String> handleUserAlreadyExistsException(UserAlreadyExistsException exception) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+	}
+	
 }
