@@ -3,6 +3,7 @@ package bucholc.arkadiusz.taskManagementApp.controller;
 import bucholc.arkadiusz.taskManagementApp.model.Task;
 import bucholc.arkadiusz.taskManagementApp.model.TaskStatus;
 import bucholc.arkadiusz.taskManagementApp.service.TaskService;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -10,12 +11,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/tasks")
 public class TaskController {
 	private final TaskService taskService;
 
@@ -34,7 +37,7 @@ public class TaskController {
 	}
 	
 	@PutMapping("/id")
-	public Task updateTask(@PathVariable Long id,@RequestBody Task updatedTask) {
+	public Task updateTask(@PathVariable Long id, @RequestBody Task updatedTask) {
 		Task task = taskService.findTaskById(id);
 		if (task != null) {
 			task.setTitle(updatedTask.getTitle());

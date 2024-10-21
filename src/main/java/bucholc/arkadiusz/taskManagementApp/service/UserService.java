@@ -1,6 +1,6 @@
 package bucholc.arkadiusz.taskManagementApp.service;
 
-import bucholc.arkadiusz.taskManagementApp.exception.TaskNotFoundException;
+import bucholc.arkadiusz.taskManagementApp.exception.UserNotFoundException;
 import bucholc.arkadiusz.taskManagementApp.model.User;
 import bucholc.arkadiusz.taskManagementApp.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -33,7 +33,7 @@ public class UserService {
 	}
 	
 	public User partialUpdate(Long id, Map<String, Object> updatesMap) {
-		User user = userRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id));
+		User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
 		updatesMap.forEach((key, value) -> {
 			switch (key) {
 				case "firstName":

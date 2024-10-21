@@ -1,6 +1,6 @@
 package bucholc.arkadiusz.taskManagementApp.service;
 
-import bucholc.arkadiusz.taskManagementApp.exception.UserNotFoundException;
+import bucholc.arkadiusz.taskManagementApp.exception.TaskNotFoundException;
 import bucholc.arkadiusz.taskManagementApp.model.Task;
 import bucholc.arkadiusz.taskManagementApp.model.TaskStatus;
 import bucholc.arkadiusz.taskManagementApp.repository.TaskRepository;
@@ -39,7 +39,7 @@ public class TaskService {
 	}
 
 	public Task partialUpdate(Long id, Map<String, Object> updates) {
-		Task task = taskRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+		Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id));
 
 		updates.forEach((key, value) -> {
 			switch (key) {
@@ -50,7 +50,7 @@ public class TaskService {
 				task.setDescription((String) value);
 				break;
 			case "status":
-				task.setStatus(String.valueOf(TaskStatus.valueOf((String) value)));
+				task.setStatus(TaskStatus.valueOf((String) value));
 				break;
 			case "dueDate":
 				task.setDueDate(LocalDate.parse((String) value));
