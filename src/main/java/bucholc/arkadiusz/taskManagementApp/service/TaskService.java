@@ -40,17 +40,8 @@ public class TaskService {
 		return taskRepository.save(task);
 	}
 
-
-	public Task saveTask(Task task) {
-		return taskRepository.save(task);
-	}
-
 	public void deleteTaskById(Long id) {
 		taskRepository.deleteById(id);
-	}
-
-	public Task findTaskById(Long id) {
-		return taskRepository.findById(id).orElse(null);
 	}
 
 	public List<Task> findTaskByStatus(TaskStatus status) {

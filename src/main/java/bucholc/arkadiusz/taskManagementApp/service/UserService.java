@@ -42,7 +42,7 @@ public class UserService {
 	}
 	
 	public User findById(Long id) {
-		return userRepository.findById(id).orElse(null);
+		return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
 	}
 	
 	public User updateUser(Long id, Map<String, Object> updatesMap) {
