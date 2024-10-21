@@ -32,19 +32,19 @@ class UserServiceTest {
 	}
 
 	@Test
-	void testPartialUpdate_UserNotFound() {
+	void testUpdateUser_UserNotFound() {
 		
 		Long userId = 1L;
 		when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
 
 		assertThrows(UserNotFoundException.class, () -> {
-			userService.partialUpdate(userId, Map.of("firstName", "John"));
+			userService.updateUser(userId, Map.of("firstName", "John"));
 		});
 	}
 
 	@Test
-	void testPartialUpdate_UpdateFirstName() {
+	void testUpdateUserFirstName() {
 		
 		Long userId = 1L;
 		User user = new User();
@@ -55,7 +55,7 @@ class UserServiceTest {
 		when(userRepository.save(user)).thenReturn(user);
 
 		
-		User updatedUser = userService.partialUpdate(userId, Map.of("firstName", "NewName"));
+		User updatedUser = userService.updateUser(userId, Map.of("firstName", "NewName"));
 
 		
 		assertEquals("NewName", updatedUser.getFirstName());

@@ -32,19 +32,19 @@ class TaskServiceTest {
 	}
 
 	@Test
-	void testPartialUpdate_TaskNotFound() {
+	void testUpdateTask_TaskNotFound() {
 	
 		Long taskId = 1L;
 		when(taskRepository.findById(taskId)).thenReturn(Optional.empty());
 
 	
 		assertThrows(TaskNotFoundException.class, () -> {
-			taskService.partialUpdate(taskId, Map.of("title", "New Task"));
+			taskService.updateTask(taskId, Map.of("title", "New Task"));
 		});
 	}
 
 	@Test
-	void testPartialUpdate_UpdateStatus() {
+	void testUpdateTaskStatus() {
 	
 		Long taskId = 1L;
 		Task task = new Task();
@@ -55,7 +55,7 @@ class TaskServiceTest {
 		when(taskRepository.save(task)).thenReturn(task);
 
 		
-		Task updatedTask = taskService.partialUpdate(taskId, Map.of("status", "IN_PROGRESS"));
+		Task updatedTask = taskService.updateTask(taskId, Map.of("status", "IN_PROGRESS"));
 
 
 		assertEquals(TaskStatus.IN_PROGRESS, updatedTask.getStatus());
