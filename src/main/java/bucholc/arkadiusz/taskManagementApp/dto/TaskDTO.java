@@ -1,4 +1,4 @@
-package bucholc.arkadiusz.taskManagementApp;
+package bucholc.arkadiusz.taskManagementApp.dto;
 
 import lombok.Data;
 

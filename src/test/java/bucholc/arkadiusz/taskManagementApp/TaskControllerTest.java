@@ -1,6 +1,7 @@
 package bucholc.arkadiusz.taskManagementApp;
 
 import bucholc.arkadiusz.taskManagementApp.controller.TaskController;
+import bucholc.arkadiusz.taskManagementApp.dto.AssignUserRequest;
 import bucholc.arkadiusz.taskManagementApp.model.Task;
 import bucholc.arkadiusz.taskManagementApp.model.TaskStatus;
 import bucholc.arkadiusz.taskManagementApp.service.TaskService;
@@ -107,5 +108,35 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 		mockMvc.perform(get("/tasks/user/lastname/{lastName}", "Kowalski"))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$[0].title").value("Test Task"));
+	}
+
+	@Test
+	public void testAssignUserToTask_Success() throws Exception {
+		AssignUserRequest request = new AssignUserRequest();
+		request.setTaskId(1L);
+		request.setUserId(1L);
+
+		when(taskService.assignUserToTask(1L, 1L)).thenReturn(task);
+
+		mockMvc.perform(post("/tasks/assign")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(request)))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.title").value("Test Task"));
+	}
+
+	@Test
+	public void testUnassignUserFromTask_Success() throws Exception {
+		AssignUserRequest request = new AssignUserRequest();
+		request.setTaskId(1L);
+		request.setUserId(1L);
+
+		when(taskService.unassignUserFromTask(1L, 1L)).thenReturn(task);
+
+		mockMvc.perform(post("/tasks/unassign")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(request)))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.title").value("Test Task"));
 	}
 }

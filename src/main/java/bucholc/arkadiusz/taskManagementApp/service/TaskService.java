@@ -78,6 +78,22 @@ public class TaskService {
 	}
 
 	public List<Task> getTasksByUserEmail(String userEmail) {
-		return taskRepository.findByUserLastName(userEmail);
+		return taskRepository.findByUserEmail(userEmail);
+	}
+
+	public Task assignUserToTask(Long taskId, Long userId) {
+		Task task = taskRepository.findById(taskId).orElseThrow(() -> new TaskNotFoundException(taskId));
+		User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+
+		task.getAssignedUsers().add(user);
+		return taskRepository.save(task);
+	}
+
+	public Task unassignUserFromTask(Long taskId, Long userId) {
+		Task task = taskRepository.findById(taskId).orElseThrow(() -> new TaskNotFoundException(taskId));
+		User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+
+		task.getAssignedUsers().remove(user);
+		return taskRepository.save(task);
 	}
 }

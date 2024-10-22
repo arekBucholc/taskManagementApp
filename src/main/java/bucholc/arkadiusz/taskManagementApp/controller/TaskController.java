@@ -1,6 +1,7 @@
 package bucholc.arkadiusz.taskManagementApp.controller;
 
-import bucholc.arkadiusz.taskManagementApp.TaskDTO;
+import bucholc.arkadiusz.taskManagementApp.dto.AssignUserRequest;
+import bucholc.arkadiusz.taskManagementApp.dto.TaskDTO;
 import bucholc.arkadiusz.taskManagementApp.exception.TaskNotFoundException;
 import bucholc.arkadiusz.taskManagementApp.exception.UserNotFoundException;
 import bucholc.arkadiusz.taskManagementApp.model.Task;
@@ -35,6 +36,24 @@ public class TaskController {
 		List<Task> tasks = taskService.findAll();
 		return ResponseEntity.ok(tasks);
 	}
+
+	@GetMapping("/status/{status}")
+	public ResponseEntity<List<Task>> getTasksByStatus(@PathVariable TaskStatus status) {
+		List<Task> foundTasks = taskService.findTaskByStatus(status);
+		return ResponseEntity.ok(foundTasks);
+	}
+
+	@GetMapping("/user/lastname/{lastName}")
+	public ResponseEntity<List<Task>> getTasksByUserLastName(@PathVariable String lastName) {
+		List<Task> tasks = taskService.getTasksByUserLastName(lastName);
+		return ResponseEntity.ok(tasks);
+	}
+
+	@GetMapping("/user/email/{email}")
+	public ResponseEntity<List<Task>> getTasksByUserEmail(@PathVariable String email) {
+		List<Task> tasks = taskService.getTasksByUserEmail(email);
+		return ResponseEntity.ok(tasks);
+	}
 	
 	@PostMapping
 	public ResponseEntity<Task> createTask(@RequestBody TaskDTO taskDTO) {
@@ -60,22 +79,16 @@ public class TaskController {
 		return ResponseEntity.noContent().build();
 	}
 	
-	@GetMapping("/status/{status}")
-	public ResponseEntity<List<Task>> getTasksByStatus(@PathVariable TaskStatus status) {
-		List<Task> foundTasks = taskService.findTaskByStatus(status);
-		return ResponseEntity.ok(foundTasks);
-	}
-
-	@GetMapping("/user/lastname/{lastName}")
-	public ResponseEntity<List<Task>> getTasksByUserLastName(@PathVariable String lastName) {
-		List<Task> tasks = taskService.getTasksByUserLastName(lastName);
-		return ResponseEntity.ok(tasks);
+	@PostMapping("/assign")
+	public ResponseEntity<Task> assignUserToTask(@RequestBody AssignUserRequest request) {
+		Task updatedTask = taskService.assignUserToTask(request.getTaskId(), request.getUserId());
+		return ResponseEntity.ok(updatedTask);
 	}
 	
-	@GetMapping("/user/email/{email}")
-	public ResponseEntity<List<Task>> getTasksByUserEmail(@PathVariable String email) {
-		List<Task> tasks = taskService.getTasksByUserEmail(email);
-		return ResponseEntity.ok(tasks);
+	@PostMapping("/unassign")
+	public ResponseEntity<Task> unassignUserFromTask(@RequestBody AssignUserRequest request) {
+		Task updatedTask = taskService.unassignUserFromTask(request.getTaskId(), request.getUserId());
+		return ResponseEntity.ok(updatedTask);
 	}
 	
 	@ExceptionHandler(UserNotFoundException.class)
