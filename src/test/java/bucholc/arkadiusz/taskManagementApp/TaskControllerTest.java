@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(TaskController.class)
- class TaskControllerTest {
+class TaskControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -42,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 	private Task task;
 
 	@BeforeEach
-	 void setup() {
+	void setup() {
 		task = new Task();
 		task.setId(1L);
 		task.setTitle("Test Task");
@@ -52,7 +52,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 	}
 
 	@Test
-	 void testGetAllTasks() throws Exception {
+	void testGetAllTasks() throws Exception {
 		when(taskService.findAll()).thenReturn(Collections.singletonList(task));
 
 		mockMvc.perform(get("/tasks"))
@@ -72,7 +72,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 	}
 
 	@Test
-	 void testCreateTask() throws Exception {
+	void testCreateTask() throws Exception {
 		when(taskService.createTask(any(Task.class), any())).thenReturn(task);
 
 		mockMvc.perform(post("/tasks")
@@ -83,14 +83,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 	}
 
 	@Test
-	 void testDeleteTask_Success() throws Exception {
+	void testDeleteTask_Success() throws Exception {
 		mockMvc.perform(delete("/tasks/{id}", 1L))
 				.andExpect(status().isNoContent());
 	}
-	
 
 	@Test
-	 void testUpdateTask() throws Exception {
+	void testUpdateTask() throws Exception {
 		when(taskService.updateTask(anyLong(), any())).thenReturn(task);
 
 		mockMvc.perform(patch("/tasks/{id}", 1L)

@@ -30,7 +30,7 @@ public class TaskController {
 	public TaskController(TaskService taskService) {
 		this.taskService = taskService;
 	}
-	
+
 	@GetMapping
 	public ResponseEntity<List<Task>> getAllTasks() {
 		List<Task> tasks = taskService.findAll();
@@ -54,7 +54,7 @@ public class TaskController {
 		List<Task> tasks = taskService.getTasksByUserEmail(email);
 		return ResponseEntity.ok(tasks);
 	}
-	
+
 	@PostMapping
 	public ResponseEntity<Task> createTask(@RequestBody TaskDTO taskDTO) {
 		Task task = new Task();
@@ -62,35 +62,35 @@ public class TaskController {
 		task.setDescription(taskDTO.getDescription());
 		task.setStatus(TaskStatus.valueOf(taskDTO.getStatus()));
 		task.setDueDate(taskDTO.getDueDate());
-		
+
 		Task createdTask = taskService.createTask(task, taskDTO.getAssignedUserIds());
 		return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
 	}
-	
-	@PatchMapping ("/{id}")
+
+	@PatchMapping("/{id}")
 	public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
 		Task updatedTask = taskService.updateTask(id, updates);
 		return ResponseEntity.ok(updatedTask);
 	}
-	
+
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
 		taskService.deleteTaskById(id);
 		return ResponseEntity.noContent().build();
 	}
-	
+
 	@PostMapping("/assign")
 	public ResponseEntity<Task> assignUserToTask(@RequestBody AssignUserRequest request) {
 		Task updatedTask = taskService.assignUserToTask(request.getTaskId(), request.getUserId());
 		return ResponseEntity.ok(updatedTask);
 	}
-	
+
 	@PostMapping("/unassign")
 	public ResponseEntity<Task> unassignUserFromTask(@RequestBody AssignUserRequest request) {
 		Task updatedTask = taskService.unassignUserFromTask(request.getTaskId(), request.getUserId());
 		return ResponseEntity.ok(updatedTask);
 	}
-	
+
 	@ExceptionHandler(UserNotFoundException.class)
 	public ResponseEntity<String> handleNoUsersFoundException(UserNotFoundException exception) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());

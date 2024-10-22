@@ -34,7 +34,7 @@ public class UserController {
 		List<User> allUsers = userService.findAll();
 		return ResponseEntity.ok(allUsers);
 	}
-	
+
 	@GetMapping("/{id}")
 	public ResponseEntity<User> getUserById(@PathVariable Long id) {
 		User user = userService.findById(id);
@@ -64,7 +64,7 @@ public class UserController {
 		User updatedUser = userService.updateUser(id, updatesMap);
 		return ResponseEntity.ok(updatedUser);
 	}
-	
+
 	@ExceptionHandler
 	public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException exception) {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
@@ -79,5 +79,5 @@ public class UserController {
 	public ResponseEntity<String> handleUserAlreadyExistsException(UserAlreadyExistsException exception) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
 	}
-	
+
 }

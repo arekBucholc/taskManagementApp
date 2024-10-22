@@ -1,6 +1,5 @@
 package bucholc.arkadiusz.taskManagementApp;
 
-
 import bucholc.arkadiusz.taskManagementApp.exception.TaskNotFoundException;
 import bucholc.arkadiusz.taskManagementApp.model.Task;
 import bucholc.arkadiusz.taskManagementApp.model.TaskStatus;
@@ -15,8 +14,10 @@ import org.mockito.MockitoAnnotations;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class TaskServiceTest {
 
@@ -33,11 +34,10 @@ class TaskServiceTest {
 
 	@Test
 	void testUpdateTask_TaskNotFound() {
-	
+
 		Long taskId = 1L;
 		when(taskRepository.findById(taskId)).thenReturn(Optional.empty());
 
-	
 		assertThrows(TaskNotFoundException.class, () -> {
 			taskService.updateTask(taskId, Map.of("title", "New Task"));
 		});
@@ -45,7 +45,7 @@ class TaskServiceTest {
 
 	@Test
 	void testUpdateTaskStatus() {
-	
+
 		Long taskId = 1L;
 		Task task = new Task();
 		task.setId(taskId);
@@ -54,13 +54,10 @@ class TaskServiceTest {
 		when(taskRepository.findById(taskId)).thenReturn(Optional.of(task));
 		when(taskRepository.save(task)).thenReturn(task);
 
-		
 		Task updatedTask = taskService.updateTask(taskId, Map.of("status", "IN_PROGRESS"));
-
 
 		assertEquals(TaskStatus.IN_PROGRESS, updatedTask.getStatus());
 		verify(taskRepository).save(task);
 	}
-
 
 }

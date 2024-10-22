@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
 	List<Task> findByStatus(TaskStatus status);
-	
+
 	boolean existsByAssignedUsersId(Long id);
 
 	@Query("SELECT t FROM Tasks t JOIN t.assignedUsers u WHERE u.lastName = :lastName")

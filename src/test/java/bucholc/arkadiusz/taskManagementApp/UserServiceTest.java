@@ -33,10 +33,9 @@ class UserServiceTest {
 
 	@Test
 	void testUpdateUser_UserNotFound() {
-		
+
 		Long userId = 1L;
 		when(userRepository.findById(userId)).thenReturn(Optional.empty());
-
 
 		assertThrows(UserNotFoundException.class, () -> {
 			userService.updateUser(userId, Map.of("firstName", "John"));
@@ -45,7 +44,7 @@ class UserServiceTest {
 
 	@Test
 	void testUpdateUserFirstName() {
-		
+
 		Long userId = 1L;
 		User user = new User();
 		user.setId(userId);
@@ -54,12 +53,10 @@ class UserServiceTest {
 		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 		when(userRepository.save(user)).thenReturn(user);
 
-		
 		User updatedUser = userService.updateUser(userId, Map.of("firstName", "NewName"));
 
-		
 		assertEquals("NewName", updatedUser.getFirstName());
 		verify(userRepository).save(user);
 	}
-	
+
 }

@@ -42,7 +42,7 @@ class UserControllerTest {
 	private User user;
 
 	@BeforeEach
-	 void setup() {
+	void setup() {
 		user = new User();
 		user.setId(1L);
 		user.setFirstName("John");
@@ -51,7 +51,7 @@ class UserControllerTest {
 	}
 
 	@Test
-	 void testGetAllUsers() throws Exception {
+	void testGetAllUsers() throws Exception {
 		when(userService.findAll()).thenReturn(Collections.singletonList(user));
 
 		mockMvc.perform(get("/users"))
@@ -60,7 +60,7 @@ class UserControllerTest {
 	}
 
 	@Test
-	 void testGetUserById() throws Exception {
+	void testGetUserById() throws Exception {
 		when(userService.findById(anyLong())).thenReturn(user);
 
 		mockMvc.perform(get("/users/{id}", 1L))
@@ -69,7 +69,7 @@ class UserControllerTest {
 	}
 
 	@Test
-	 void testCreateUser() throws Exception {
+	void testCreateUser() throws Exception {
 		when(userService.createUser(any(User.class))).thenReturn(user);
 
 		mockMvc.perform(post("/users")
@@ -80,13 +80,13 @@ class UserControllerTest {
 	}
 
 	@Test
-	 void testDeleteUser_Success() throws Exception {
+	void testDeleteUser_Success() throws Exception {
 		mockMvc.perform(delete("/users/{id}", 1L))
 				.andExpect(status().isNoContent());
 	}
 
 	@Test
-	 void testDeleteUser_UserAssignedToTask() throws Exception {
+	void testDeleteUser_UserAssignedToTask() throws Exception {
 		doThrow(new UserAssignedToTaskException("User is assigned to task"))
 				.when(userService).removeUser(anyLong());
 
@@ -96,7 +96,7 @@ class UserControllerTest {
 	}
 
 	@Test
-	 void testCreateUser_UserAlreadyExists() throws Exception {
+	void testCreateUser_UserAlreadyExists() throws Exception {
 		when(userService.createUser(any(User.class))).thenThrow(new UserAlreadyExistsException("User with email john.doe@example.com already exists"));
 
 		mockMvc.perform(post("/users")

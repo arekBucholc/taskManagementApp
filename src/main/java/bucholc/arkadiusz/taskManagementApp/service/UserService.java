@@ -20,7 +20,7 @@ public class UserService {
 		this.userRepository = userRepository;
 		this.taskRepository = taskRepository;
 	}
-	
+
 	public List<User> findAll() {
 		return userRepository.findAll();
 	}
@@ -33,10 +33,10 @@ public class UserService {
 		if (userRepository.existsByEmail(user.getEmail())) {
 			throw new UserAlreadyExistsException("User with email " + user.getEmail() + " already exists");
 		}
-		
+
 		return userRepository.save(user);
 	}
-	
+
 	public void removeUser(Long id) {
 		boolean isUserAssignedToTask = taskRepository.existsByAssignedUsersId(id);
 		if (isUserAssignedToTask) {
@@ -44,24 +44,24 @@ public class UserService {
 		}
 		userRepository.deleteById(id);
 	}
-	
+
 	public User findById(Long id) {
 		return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
 	}
-	
+
 	public User updateUser(Long id, Map<String, Object> updatesMap) {
 		User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
 		updatesMap.forEach((key, value) -> {
 			switch (key) {
-				case "firstName":
-					user.setFirstName((String) value);
-					break;
-				case "lastName":
-					user.setLastName((String) value);
-					break;
-				case "email":
-					user.setEmail((String) value);
-					break;
+			case "firstName":
+				user.setFirstName((String) value);
+				break;
+			case "lastName":
+				user.setLastName((String) value);
+				break;
+			case "email":
+				user.setEmail((String) value);
+				break;
 			default:
 				throw new IllegalStateException("Unexpected value: " + key);
 			}
