@@ -25,6 +25,10 @@ public class UserService {
 		return userRepository.findAll();
 	}
 
+	public List<User> getUsersByLastName(String lastName) {
+		return userRepository.findByLastName(lastName);
+	}
+
 	public User createUser(User user) {
 		if (userRepository.existsByEmail(user.getEmail())) {
 			throw new UserAlreadyExistsException("User with email " + user.getEmail() + " already exists");

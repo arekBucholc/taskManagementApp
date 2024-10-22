@@ -65,6 +65,18 @@ public class TaskController {
 		List<Task> foundTasks = taskService.findTaskByStatus(status);
 		return ResponseEntity.ok(foundTasks);
 	}
+
+	@GetMapping("/user/lastname/{lastName}")
+	public ResponseEntity<List<Task>> getTasksByUserLastName(@PathVariable String lastName) {
+		List<Task> tasks = taskService.getTasksByUserLastName(lastName);
+		return ResponseEntity.ok(tasks);
+	}
+	
+	@GetMapping("/user/email/{email}")
+	public ResponseEntity<List<Task>> getTasksByUserEmail(@PathVariable String email) {
+		List<Task> tasks = taskService.getTasksByUserEmail(email);
+		return ResponseEntity.ok(tasks);
+	}
 	
 	@ExceptionHandler(UserNotFoundException.class)
 	public ResponseEntity<String> handleNoUsersFoundException(UserNotFoundException exception) {

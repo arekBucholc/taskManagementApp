@@ -72,4 +72,12 @@ public class TaskService {
 
 		return taskRepository.save(task);
 	}
+	
+	public List<Task> getTasksByUserLastName(String lastName) {
+		return taskRepository.findByUserLastName(lastName);
+	}
+
+	public List<Task> getTasksByUserEmail(String userEmail) {
+		return taskRepository.findByUserLastName(userEmail);
+	}
 }

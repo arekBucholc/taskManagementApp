@@ -98,4 +98,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.title").value("Test Task"));
 	}
+
+	@Test
+	public void testGetTasksByUserLastName() throws Exception {
+		List<Task> tasks = Collections.singletonList(task);
+		when(taskService.getTasksByUserLastName("Kowalski")).thenReturn(tasks);
+
+		mockMvc.perform(get("/tasks/user/lastname/{lastName}", "Kowalski"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$[0].title").value("Test Task"));
+	}
 }
